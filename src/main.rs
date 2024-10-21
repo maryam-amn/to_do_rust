@@ -15,7 +15,7 @@ fn main() -> std::io::Result<()> {
     };
 
     if todo.contains("--delete") {
-        let test = todo.split("pat").last();
+        let test = todo.split_whitespace().last();
         let number_line: usize = test.expect("Err").parse().unwrap();
 
         todos.remove(number_line - 1);
