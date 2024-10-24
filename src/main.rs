@@ -1,21 +1,26 @@
-use std::fs::{self, read_to_string};
-use std::io::{self};
+use clap::Parser;
 use serde::{Deserialize, Serialize};
 use serde_json;
-use clap::Parser;
+use std::fs::{self, read_to_string};
+use std::io::{self};
+use std::usize;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Todo {
     content: String,
+    status: bool,
 }
-#[derive(Parser,Debug)]
-#[command(version = "0.1")]
+#[derive(Parser)]
+#[command(version, about, long_about = None)]
 struct Flag {
-    #[arg(long, short)]
-    delete: Option<usize>
+    #[arg(long, short, default_value_t = 0)]
+    delete: usize,
+    // to indicate that the to do is finished
+    #[arg(long, default_value_t = 0)]
+    done: usize,
 }
+
 fn main() -> std::io::Result<()> {
-    
     let flags = Flag::parse();
 
     let mut todos: Vec<Todo> = match read_to_string("todo.json") {
@@ -24,24 +29,24 @@ fn main() -> std::io::Result<()> {
     };
 
     // delete flag
-  
-    if let Some(number_line) = flags.delete {
-        if number_line > 0 && number_line <= todos.len() {
-            todos.remove(number_line - 1);
-        } 
+
+    if flags.delete > 0 && flags.delete <= todos.len() {
+        todos.remove(flags.delete - 1);
+    } else if flags.done > 0 && flags.done <= todos.len() {
+        todos[flags.done - 1].status = false;
     } else {
         let mut user_input = String::new();
         println!("Enter a to-do list");
         io::stdin().read_line(&mut user_input)?;
-
         let user_input = user_input.trim();
-        if !user_input.is_empty() {
-            todos.push(Todo {
-                content: user_input.to_string(),
-            });
-            } 
+
+        let user_todo = Todo {
+            content: user_input.to_string(),
+            status: false,
+        };
+        todos.push(user_todo);
     }
-    
+
     fs::write("todo.json", serde_json::to_string(&mut todos).expect("err")).expect("can't write");
 
     Ok(())
