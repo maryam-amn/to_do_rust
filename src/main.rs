@@ -1,9 +1,8 @@
 use clap::Parser;
 use serde::{Deserialize, Serialize};
-use serde_json;
+use serde_json::{self};
 use std::fs::{self, read_to_string};
 use std::io::{self};
-use std::usize;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Todo {
@@ -18,6 +17,9 @@ struct Flag {
     // to indicate that the to do is finished
     #[arg(long, default_value_t = 0)]
     done: usize,
+    // to indicate that the to-do is unfinshed 3 line 
+    #[arg(long, default_value_t = 0)]
+    undone: usize,
 }
 
 fn main() -> std::io::Result<()> {
@@ -33,8 +35,12 @@ fn main() -> std::io::Result<()> {
     if flags.delete > 0 && flags.delete <= todos.len() {
         todos.remove(flags.delete - 1);
     } else if flags.done > 0 && flags.done <= todos.len() {
+        todos[flags.done - 1].status = true;
+    }
+    else if flags.undone > 0 && flags.undone <= todos.len() {
         todos[flags.done - 1].status = false;
-    } else {
+    }
+     else {
         let mut user_input = String::new();
         println!("Enter a to-do list");
         io::stdin().read_line(&mut user_input)?;
@@ -47,7 +53,7 @@ fn main() -> std::io::Result<()> {
         todos.push(user_todo);
     }
 
-    fs::write("todo.json", serde_json::to_string(&mut todos).expect("err")).expect("can't write");
+    fs::write("todo.json", serde_json::to_string(&todos).expect("err")).expect("can't write");
 
     Ok(())
 }
