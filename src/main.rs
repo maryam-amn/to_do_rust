@@ -30,6 +30,9 @@ struct Flag {
 
     #[arg(long, default_value_t = 0)]
     id: usize,
+
+    #[arg(long,)]
+    list: Option<bool>,
 }
 
 fn main() -> std::io::Result<()> {
@@ -57,7 +60,13 @@ fn main() -> std::io::Result<()> {
                 println!("Mauvais format");
             }
         }
-    } else {
+    } else if  flags.list.expect("Erreur de commande") {
+            
+            for (i, list_todo) in todos.iter().enumerate() {
+            let status = if list_todo.status { "Done" } else { "Undone" };
+            println!("{}. {}, {}", i + 1, list_todo.content, status);
+            }
+    }else {
         let mut user_input = String::new();
         println!("Enter a to-do list");
         io::stdin().read_line(&mut user_input)?;
