@@ -28,29 +28,11 @@
 for more information : 
 -  [Rust - website ](https://www.rust-lang.org/tools/install)
 
-## To-do list
-
-This project is a to-do list that allows us to put to-dos in a file. We can use different flags, which are useful in a to-do list: This project is a to-do list 
-
-The different flags : 
-
-    --done flag followed by the todo number to indicate that it is completed.
-
-    --undone flag followed by the todo number to indicate that it is not completed.
-
-    --due flag followed by a date in the format "YY-MM-DD" to add a deadline.
-
-    --list flag to display all todos and their status (done, undone).
-
-    --sort flag to sort the list in order of priority.
-
 ## Commande Rust 
 
 Allows you to create a project
 - `  Cargo new ` ` exemple_new`
 
-Allows us to delete a item in the list 
-- `  Cargo run -- --delete ` 
 
 ## To-do list  documentation
 
